@@ -2,6 +2,8 @@
 
 Helper class to work with url strings.
 
+[![Build Status](https://travis-ci.org/urmaul/url.svg)](https://travis-ci.org/urmaul/url)
+
 ## Installing
 
 ``
