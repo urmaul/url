@@ -2,6 +2,12 @@
 
 Helper class to work with url strings.
 
+## Installing
+
+``
+composer require urmaul/url dev-master
+``
+
 ## Creating
 
 ```php
