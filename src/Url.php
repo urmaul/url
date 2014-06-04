@@ -15,6 +15,11 @@ class Url
 		$this->url = $url;
 	}
 	
+	public static function from($url)
+	{
+		return new self($url);
+	}
+	
 	/**
 	 * Returns absolute url.
 	 * @param string $baseUrl

@@ -22,10 +22,9 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider absoluteProvider
 	 */
-	public function testAbsolute($urlString, $base, $expected, $message)
+	public function testAbsolute($url, $base, $expected, $message)
 	{
-		$url = new Url($urlString);
-		$this->assertEquals($expected, $url->absolute($base), $message);
+		$this->assertEquals($expected, Url::from($url)->absolute($base), $message);
 	}
 
 	public function addParamProvider()
