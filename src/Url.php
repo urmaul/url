@@ -33,7 +33,7 @@ class Url
 		if ($pos === false || $pos > 10) {
 			$parsed = parse_url($baseUrl);
 			if (!isset($parsed['scheme']))
-				throw new Exception('Invalid base url "' . $baseUrl . '": scheme not found.');
+				throw new \Exception('Invalid base url "' . $baseUrl . '": scheme not found.');
 			
 			if (strncmp($url, '//', 2) == 0) {
 				return $parsed['scheme'] . ':' . $url;
