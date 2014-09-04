@@ -31,7 +31,7 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 	{
 		return array(
 			array('/?a=b', '/', 'a', 'b'),
-			array('/?a=b', '', 'a', 'b'),
+			array('?a=b', '', 'a', 'b'),
 			array('/c?a=b', '/c', 'a', 'b'),
 			array('/c/?a=b', '/c/', 'a', 'b'),
 			array('/c/d?a=b', '/c/d', 'a', 'b'),
@@ -55,7 +55,22 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testAddParam($expected, $uri, $name, $value)
 	{
-		$host = 'http://domain.com';
+		$url = new Url($uri);
+		$actual = $url->addParam($name, $value);
+		
+		$this->assertEquals($expected, $actual);
+	}
+	
+	/**
+	 * @dataProvider addParamProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param type $name
+	 * @param type $value
+	 */
+	public function testAddParamAbsolute($expected, $uri, $name, $value)
+	{
+		$host = 'http://domain.com' . (strncmp($expected, '/', 1) === 0 ? '' : '/');
 		$url = new Url($host . $uri);
 		$actual = $url->addParam($name, $value);
 		

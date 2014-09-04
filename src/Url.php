@@ -56,7 +56,6 @@ class Url
 				array_pop($pathParts);
 				$url = substr($url, 3);
 			}
-			//echo $url . '<br />' . $baseUrl . '<br />' . $fullHost . '<b>' . implode('/', $pathParts) . '</b>' . '/' . $url . '<br />' . '<br />';
 			
 			return $fullHost . implode('/', $pathParts) . '/' . $url;
 		}
@@ -84,10 +83,14 @@ class Url
 		
 		$params[$name] = $value;
 		
+		$prefix = '';
+		if (isset($parts['host'])) {
+			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
+		}
+		
 		return sprintf(
-			'%s://%s%s?%s%s',
-			$parts['scheme'],
-			$parts['host'],
+			'%s%s?%s%s',
+			$prefix,
 			$parts['path'],
 			http_build_query($params),
 			isset($parts['fragment']) ? '#' . $parts['fragment'] : ''
