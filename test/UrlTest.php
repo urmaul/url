@@ -78,4 +78,70 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 		
 		$this->assertEquals($host . $expected, $actual);
 	}
+
+	public function addParamsProvider()
+	{
+		return array(
+			array('/?a=b', '/', array('a' => 'b')),
+			array('/', '/', array('a' => null)),
+			array('?a=b', '', array('a' => 'b')),
+			array('/c?a=b', '/c', array('a' => 'b')),
+			array('/c', '/c', array('a' => null)),
+			array('/c/?a=b', '/c/', array('a' => 'b')),
+			array('/c/d?a=b', '/c/d', array('a' => 'b')),
+			array('/c/d/?a=b', '/c/d/', array('a' => 'b')),
+			array('/c/d/?a=b', '/c/d/?', array('a' => 'b')),
+			array('/c/d/?e=f&a=b', '/c/d/?e=f', array('a' => 'b')),
+			array('/c/d/?a=b', '/c/d/?a=e', array('a' => 'b')),
+			array('/c/d/?e=f&a=b', '/c/d/?e=f&a=e', array('a' => 'b')),
+			array('/?a=b#hello', '/#hello', array('a' => 'b')),
+			array('/c/d/?a=b#hello', '/c/d/#hello', array('a' => 'b')),
+			array('/c/d/?e=f&a=b#hello', '/c/d/?e=f&a=e#hello', array('a' => 'b')),
+			
+			array('/?a=b&c=d', '/', array('a' => 'b', 'c' => 'd')),
+			array('/?c=d', '/', array('a' => null, 'c' => 'd')),
+			array('?a=b&c=d', '', array('a' => 'b', 'c' => 'd')),
+			array('/c?a=b&c=d', '/c', array('a' => 'b', 'c' => 'd')),
+			array('/c?c=d', '/c', array('a' => null, 'c' => 'd')),
+			array('/c/?a=b&c=d', '/c/', array('a' => 'b', 'c' => 'd')),
+			array('/c/d?a=b&c=d', '/c/d', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?a=b&c=d', '/c/d/', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?a=b&c=d', '/c/d/?', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?e=f&a=b&c=d', '/c/d/?e=f', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?a=b&c=d', '/c/d/?a=e', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?e=f&a=b&c=d', '/c/d/?e=f&a=e', array('a' => 'b', 'c' => 'd')),
+			array('/?a=b&c=d#hello', '/#hello', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?a=b&c=d#hello', '/c/d/#hello', array('a' => 'b', 'c' => 'd')),
+			array('/c/d/?e=f&a=b&c=d#hello', '/c/d/?e=f&a=e#hello', array('a' => 'b', 'c' => 'd')),
+		);
+	}
+	
+	/**
+	 * @dataProvider addParamsProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param array $addParams
+	 */
+	public function testAddParams($expected, $uri, $addParams)
+	{
+		$url = new Url($uri);
+		$actual = $url->addParams($addParams);
+		
+		$this->assertEquals($expected, $actual);
+	}
+	
+	/**
+	 * @dataProvider addParamsProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param array $addParams
+	 */
+	public function testAddParamsAbsolute($expected, $uri, $addParams)
+	{
+		$host = 'http://domain.com' . (strncmp($expected, '/', 1) === 0 ? '' : '/');
+		$url = new Url($host . $uri);
+		$actual = $url->addParams($addParams);
+		
+		$this->assertEquals($host . $expected, $actual);
+	}
 }

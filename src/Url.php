@@ -64,12 +64,11 @@ class Url
 	}
 
 	/**
-	 * Adds parameter to an url.
-	 * @param string $name parameter name
-	 * @param string $value parameter value
+	 * Adds parameters to an url.
+	 * @param array $addParams [name => value] parameters to add
 	 * @return string result url
 	 */
-	public function addParam($name, $value)
+	public function addParams(array $addParams)
 	{
 		$url = $this->url;
 		
@@ -79,15 +78,13 @@ class Url
 			'path' => '/',
 		);
 		
-		parse_str($parts['query'], $params);
-		
-		$params[$name] = $value;
-		
 		$prefix = '';
 		if (isset($parts['host'])) {
 			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
 		}
 		
+		parse_str($parts['query'], $params);
+		$params = array_merge($params, $addParams);
 		$query = http_build_query($params);
 		
 		return 
@@ -95,5 +92,16 @@ class Url
 			$parts['path'] .
 			($query ? '?' . $query : '') .
 			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+	}
+
+	/**
+	 * Adds parameter to an url.
+	 * @param string $name parameter name
+	 * @param string $value parameter value
+	 * @return string result url
+	 */
+	public function addParam($name, $value)
+	{
+		return $this->addParams(array($name => $value));
 	}
 }
