@@ -31,8 +31,10 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 	{
 		return array(
 			array('/?a=b', '/', 'a', 'b'),
+			array('/', '/', 'a', null),
 			array('?a=b', '', 'a', 'b'),
 			array('/c?a=b', '/c', 'a', 'b'),
+			array('/c', '/c', 'a', null),
 			array('/c/?a=b', '/c/', 'a', 'b'),
 			array('/c/d?a=b', '/c/d', 'a', 'b'),
 			array('/c/d/?a=b', '/c/d/', 'a', 'b'),

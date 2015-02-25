@@ -88,12 +88,12 @@ class Url
 			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
 		}
 		
-		return sprintf(
-			'%s%s?%s%s',
-			$prefix,
-			$parts['path'],
-			http_build_query($params),
-			isset($parts['fragment']) ? '#' . $parts['fragment'] : ''
-		);
+		$query = http_build_query($params);
+		
+		return 
+			$prefix .
+			$parts['path'] .
+			($query ? '?' . $query : '') .
+			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
 	}
 }
