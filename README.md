@@ -48,3 +48,17 @@ echo Url::from('http://urmaul.com/?foo=bar')->addParam('spam', 'ham');
 echo Url::from('http://urmaul.com/?foo=bar')->addParam('foo', 'spam');
 // http://urmaul.com/?foo=spam
 ```
+
+* string **addParams($addParame)** - adds get parameters to url.
+
+
+```php
+echo Url::from('http://urmaul.com/')->addParam(array('foo' => 'bar'));
+// http://urmaul.com/?foo=bar
+
+echo Url::from('http://urmaul.com/?foo=bar')->addParam(array('spam' => 'ham'));
+// http://urmaul.com/?foo=bar&spam=ham
+
+echo Url::from('http://urmaul.com/?foo=bar')->addParam(array('foo' => 'spam'));
+// http://urmaul.com/?foo=spam
+```
