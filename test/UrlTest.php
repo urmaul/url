@@ -227,6 +227,8 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 			array('/?a=b&c=d#hello', '/#hello', array('a', 'c')),
 			array('/c/d/?a=b&c=d#hello', '/c/d/#hello', array('a', 'c')),
 			array('/c/d/?e=f&a=b&c=d#hello', '/c/d/?e=f#hello', array('a', 'c')),
+			
+			array('/catalog/sale/?admuid=48a8e994fc696d1a88b5c5197b1fb03d&PAGEN_1=1', '/catalog/sale/?PAGEN_1=1', array('ext_meta_id', 'source_id', 'admuid')),
 		);
 	}
 	
