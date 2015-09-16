@@ -75,7 +75,7 @@ class Url
 		$parts = parse_url($url) + array(
 			'scheme' => 'http',
 			'query' => '',
-			'path' => '/',
+			'path' => '',
 		);
 		
 		$prefix = '';
@@ -103,5 +103,46 @@ class Url
 	public function addParam($name, $value)
 	{
 		return $this->addParams(array($name => $value));
+	}
+
+	/**
+	 * Removes query parameters from url.
+	 * @param array $removeParams [name => value] parameters to add
+	 * @return string result url
+	 */
+	public function removeParams(array $removeParams)
+	{
+		$url = $this->url;
+		
+		$parts = parse_url($url) + array(
+			'scheme' => 'http',
+			'query' => '',
+			'path' => '',
+		);
+		
+		$prefix = '';
+		if (isset($parts['host'])) {
+			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
+		}
+		
+		parse_str($parts['query'], $params);
+		$params = array_diff_key($params, array_flip($removeParams));
+		$query = http_build_query($params);
+		
+		return 
+			$prefix .
+			$parts['path'] .
+			($query ? '?' . $query : '') .
+			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+	}
+
+	/**
+	 * Removes query parameter from url.
+	 * @param string $name parameter name
+	 * @return string result url
+	 */
+	public function removeParam($name)
+	{
+		return $this->removeParams(array($name));
 	}
 }

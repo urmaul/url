@@ -27,6 +27,7 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, Url::from($url)->absolute($base), $message);
 	}
 
+	
 	public function addParamProvider()
 	{
 		return array(
@@ -78,6 +79,7 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 		
 		$this->assertEquals($host . $expected, $actual);
 	}
+	
 
 	public function addParamsProvider()
 	{
@@ -141,6 +143,118 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 		$host = 'http://domain.com' . (strncmp($expected, '/', 1) === 0 ? '' : '/');
 		$url = new Url($host . $uri);
 		$actual = $url->addParams($addParams);
+		
+		$this->assertEquals($host . $expected, $actual);
+	}
+	
+	
+	public function removeParamProvider()
+	{
+		return array(
+			array('/?a=b', '/', 'a'),
+			array('/', '/', 'a'),
+			array('?a=b', '', 'a'),
+			array('/c?a=b', '/c', 'a'),
+			array('/c', '/c', 'a'),
+			array('/c/?a=b', '/c/', 'a'),
+			array('/c/d?a=b', '/c/d', 'a'),
+			array('/c/d/?a=b', '/c/d/', 'a'),
+			array('/c/d/?a=b&a=c', '/c/d/', 'a'),
+			array('/c/d/?e=f&a=b', '/c/d/?e=f', 'a'),
+			array('/?a=b#hello', '/#hello', 'a'),
+			array('/c/d/?a=b#hello', '/c/d/#hello', 'a'),
+			array('/c/d/?e=f&a=b#hello', '/c/d/?e=f#hello', 'a'),
+		);
+	}
+	
+	/**
+	 * @dataProvider removeParamProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param type $name
+	 * @param type $value
+	 */
+	public function testRemoveParam($uri, $expected, $name)
+	{
+		$url = new Url($uri);
+		$actual = $url->removeParam($name);
+		
+		$this->assertEquals($expected, $actual);
+	}
+	
+	/**
+	 * @dataProvider removeParamProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param type $name
+	 * @param type $value
+	 */
+	public function testRemoveParamAbsolute($uri, $expected, $name)
+	{
+		$host = 'http://domain.com' . (strncmp($expected, '/', 1) === 0 ? '' : '/');
+		$url = new Url($host . $uri);
+		$actual = $url->removeParam($name);
+		
+		$this->assertEquals($host . $expected, $actual);
+	}
+	
+	
+	public function removeParamsProvider()
+	{
+		return array(
+			array('/?a=b', '/', array('a')),
+			array('/', '/', array('a')),
+			array('?a=b', '', array('a')),
+			array('/c?a=b', '/c', array('a')),
+			array('/c', '/c', array('a')),
+			array('/c/?a=b', '/c/', array('a')),
+			array('/c/d?a=b', '/c/d', array('a')),
+			array('/c/d/?a=b', '/c/d/', array('a')),
+			array('/c/d/?e=f&a=b', '/c/d/?e=f', array('a')),
+			array('/?a=b#hello', '/#hello', array('a')),
+			array('/c/d/?a=b#hello', '/c/d/#hello', array('a')),
+			array('/c/d/?e=f&a=b#hello', '/c/d/?e=f#hello', array('a')),
+			
+			array('/?a=b&c=d', '/', array('a', 'c')),
+			array('/?c=d', '/', array('a', 'c')),
+			array('?a=b&c=d', '', array('a', 'c')),
+			array('/c?a=b&c=d', '/c', array('a', 'c')),
+			array('/c?c=d', '/c', array('a', 'c')),
+			array('/c/?a=b&c=d', '/c/', array('a', 'c')),
+			array('/c/d?a=b&c=d', '/c/d', array('a', 'c')),
+			array('/c/d/?a=b&c=d', '/c/d/', array('a', 'c')),
+			array('/c/d/?e=f&a=b&c=d', '/c/d/?e=f', array('a', 'c')),
+			array('/?a=b&c=d#hello', '/#hello', array('a', 'c')),
+			array('/c/d/?a=b&c=d#hello', '/c/d/#hello', array('a', 'c')),
+			array('/c/d/?e=f&a=b&c=d#hello', '/c/d/?e=f#hello', array('a', 'c')),
+		);
+	}
+	
+	/**
+	 * @dataProvider removeParamsProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param array $addParams
+	 */
+	public function testRemoveParams($uri, $expected, $params)
+	{
+		$url = new Url($uri);
+		$actual = $url->removeParams($params);
+		
+		$this->assertEquals($expected, $actual);
+	}
+	
+	/**
+	 * @dataProvider removeParamsProvider
+	 * @param type $expected
+	 * @param type $uri
+	 * @param array $addParams
+	 */
+	public function testRemoveParamsAbsolute($uri, $expected, $params)
+	{
+		$host = 'http://domain.com' . (strncmp($expected, '/', 1) === 0 ? '' : '/');
+		$url = new Url($host . $uri);
+		$actual = $url->removeParams($params);
 		
 		$this->assertEquals($host . $expected, $actual);
 	}
