@@ -49,16 +49,41 @@ echo Url::from('http://urmaul.com/?foo=bar')->addParam('foo', 'spam');
 // http://urmaul.com/?foo=spam
 ```
 
-* string **addParams($addParame)** - adds get parameters to url.
+* string **addParams($addParams)** - adds get parameters to url.
 
 
 ```php
-echo Url::from('http://urmaul.com/')->addParam(array('foo' => 'bar'));
+echo Url::from('http://urmaul.com/')->addParams(array('foo' => 'bar'));
 // http://urmaul.com/?foo=bar
 
-echo Url::from('http://urmaul.com/?foo=bar')->addParam(array('spam' => 'ham'));
+echo Url::from('http://urmaul.com/?foo=bar')->addParams(array('spam' => 'ham'));
 // http://urmaul.com/?foo=bar&spam=ham
 
-echo Url::from('http://urmaul.com/?foo=bar')->addParam(array('foo' => 'spam'));
+echo Url::from('http://urmaul.com/?foo=bar')->addParams(array('foo' => 'spam'));
 // http://urmaul.com/?foo=spam
+```
+
+* string **removeParam($name, $value)** - removes get parameter from url.
+
+
+```php
+echo Url::from('http://urmaul.com/?foo=bar')->removeParam('foo');
+// http://urmaul.com/
+
+echo Url::from('http://urmaul.com/?foo=bar&spam=ham')->removeParam('spam');
+// http://urmaul.com/?spam=ham
+```
+
+* string **removeParams($removeParams)** - removes get parameters from url.
+
+
+```php
+echo Url::from('http://urmaul.com/?foo=bar')->removeParams(array('foo', 'spam'));
+// http://urmaul.com/
+
+echo Url::from('http://urmaul.com/?foo=bar&spam=ham')->removeParams(array('foo', 'spam'));
+// http://urmaul.com/
+
+echo Url::from('http://urmaul.com/?foo=bar&foo=spam&ham=spam')->removeParams(array('foo', 'spam'));
+// http://urmaul.com/?ham=spam
 ```
