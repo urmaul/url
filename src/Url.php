@@ -70,28 +70,13 @@ class Url
 	 */
 	public function addParams(array $addParams)
 	{
-		$url = $this->url;
-		
-		$parts = parse_url($url) + array(
-			'scheme' => 'http',
-			'query' => '',
-			'path' => '',
-		);
-		
-		$prefix = '';
-		if (isset($parts['host'])) {
-			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
-		}
+		$parts = $this->split($this->url);
 		
 		parse_str($parts['query'], $params);
 		$params = array_merge($params, $addParams);
-		$query = http_build_query($params);
+		$parts['query'] = http_build_query($params);
 		
-		return 
-			$prefix .
-			$parts['path'] .
-			($query ? '?' . $query : '') .
-			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+		return $this->join($parts);
 	}
 
 	/**
@@ -112,28 +97,13 @@ class Url
 	 */
 	public function removeParams(array $removeParams)
 	{
-		$url = $this->url;
-		
-		$parts = parse_url($url) + array(
-			'scheme' => 'http',
-			'query' => '',
-			'path' => '',
-		);
-		
-		$prefix = '';
-		if (isset($parts['host'])) {
-			$prefix = sprintf('%s://%s', $parts['scheme'], $parts['host']);
-		}
+		$parts = $this->split($this->url);
 		
 		parse_str($parts['query'], $params);
 		$params = array_diff_key($params, array_flip($removeParams));
-		$query = http_build_query($params);
+		$parts['query'] = http_build_query($params);
 		
-		return 
-			$prefix .
-			$parts['path'] .
-			($query ? '?' . $query : '') .
-			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+		return $this->join($parts);
 	}
 
 	/**
@@ -144,5 +114,41 @@ class Url
 	public function removeParam($name)
 	{
 		return $this->removeParams(array($name));
+	}
+	
+	
+	/**
+	 * Splits url to parts
+	 * @param string $url
+	 * @return array
+	 */
+	private function split($url)
+	{
+		$parts = parse_url($url) + array(
+			'scheme' => 'http',
+			'query' => '',
+			'path' => '',
+		);
+		
+		$parts['prefix'] = '';
+		if (isset($parts['host'])) {
+			$parts['prefix'] = sprintf('%s://%s', $parts['scheme'], $parts['host']);
+		}
+		
+		return $parts;
+	}
+	
+	/**
+	 * Joins url parts to url string
+	 * @param array $parts
+	 * @return string
+	 */
+	private function join($parts)
+	{
+		return 
+			$parts['prefix'] .
+			$parts['path'] .
+			($parts['query'] ? '?' . $parts['query'] : '') .
+			(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
 	}
 }
