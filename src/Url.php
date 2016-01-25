@@ -31,9 +31,14 @@ class Url
 		
 		$pos = strpos($url, '://');
 		if ($pos === false || $pos > 10) {
-			$parsed = parse_url($baseUrl);
-			if (!isset($parsed['scheme']))
+			$parsed = parse_url($baseUrl) + array(
+                'path' => '',
+            );
+			if (!isset($parsed['scheme'], $parsed['host']))
 				throw new \Exception('Invalid base url "' . $baseUrl . '": scheme not found.');
+            
+            if (empty($url))
+                return $baseUrl;
 			
 			if (strncmp($url, '//', 2) == 0) {
 				return $parsed['scheme'] . ':' . $url;

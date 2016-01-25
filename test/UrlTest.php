@@ -16,6 +16,7 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 			array('?a=b', $base, $base . '?a=b', 'Url starts with "?"'),
 			array('?a=b', $base . '?c=d', $base . '?a=b', 'Url starts with "?"'),
 			array('../swf/game.swf', $base, $good, 'Url doesn\'t start with "/"'),
+			array('', $base, $base, 'Empty url'),
 		);
 	}
 	
