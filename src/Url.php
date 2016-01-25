@@ -22,7 +22,7 @@ class Url
 	
 	/**
 	 * Returns absolute url.
-	 * @param string $baseUrl
+	 * @param string $baseUrl base url to create absolute url.
 	 * @return string
 	 */
 	public function absolute($baseUrl)
@@ -32,13 +32,13 @@ class Url
 		$pos = strpos($url, '://');
 		if ($pos === false || $pos > 10) {
 			$parsed = parse_url($baseUrl) + array(
-                'path' => '',
-            );
+				'path' => '',
+			);
 			if (!isset($parsed['scheme'], $parsed['host']))
 				throw new \Exception('Invalid base url "' . $baseUrl . '": scheme not found.');
-            
-            if (empty($url))
-                return $baseUrl;
+			
+			if (empty($url))
+				return $baseUrl;
 			
 			if (strncmp($url, '//', 2) == 0) {
 				return $parsed['scheme'] . ':' . $url;
