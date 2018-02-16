@@ -1,8 +1,11 @@
 <?php
 
+namespace urmaul\url\test;
+
+use PHPUnit\Framework\TestCase;
 use urmaul\url\Url;
 
-class ScraperHelperTest extends PHPUnit_Framework_TestCase
+class UrlTest extends TestCase
 {
 	public function absoluteProvider()
 	{
@@ -29,6 +32,31 @@ class ScraperHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	
+	public function rootRelativeProvider()
+	{
+		$good = '/swf/game.swf';
+		$base = 'http://site.com/cat/game.htm';
+
+		return array(
+			array($good, $base, $good, 'Url is absolute'),
+			array('//site.com/swf/game.swf', $base, $good, 'Url starts with "//"'),
+			array('/swf/game.swf', $base, $good, 'Url starts with "/"'),
+			array('?a=b', $base, '/cat/game.htm' . '?a=b', 'Url starts with "?"'),
+			array('?a=b', $base . '?c=d', '/cat/game.htm' . '?a=b', 'Url starts with "?"'),
+			array('../swf/game.swf', $base, $good, 'Url doesn\'t start with "/"'),
+			array('', $base, '/cat/game.htm', 'Empty url'),
+		);
+	}
+
+	/**
+	 * @dataProvider rootRelativeProvider
+	 */
+	public function testRootRelative($url, $base, $expected, $message)
+	{
+		$this->assertEquals($expected, Url::from($url)->rootRelative($base), $message);
+	}
+
+
 	public function addParamProvider()
 	{
 		return array(

@@ -24,6 +24,7 @@ class Url
 	 * Returns absolute url.
 	 * @param string $baseUrl base url to create absolute url.
 	 * @return string
+	 * @throws \Exception if baseUrl is invalid
 	 */
 	public function absolute($baseUrl)
 	{
@@ -65,6 +66,58 @@ class Url
 			return $fullHost . implode('/', $pathParts) . '/' . $url;
 		}
 		
+		return $url;
+	}
+
+	/**
+	 * Returns root relative url.
+	 * @param string $baseUrl base url to create absolute url.
+	 * @return string
+	 * @throws \Exception if baseUrl is invalid
+	 */
+	public function rootRelative($baseUrl)
+	{
+		$url = $this->url;
+
+		$pos = strpos($url, '://');
+		if ($pos === false || $pos > 10) {
+			$parsedBaseUrl = parse_url($baseUrl) + array(
+				'path' => '',
+			);
+			if (!isset($parsedBaseUrl['scheme'], $parsedBaseUrl['host'])) {
+                throw new \Exception('Invalid base url "' . $baseUrl . '": scheme not found.');
+            }
+
+			if (empty($url)) {
+                return $parsedBaseUrl['path'] . (isset($parsedBaseUrl['query']) ? '?' . $parsedBaseUrl['query'] : '');
+            }
+
+            $parsedUrl = parse_url($url) + array(
+                'path' => '/',
+            );
+            if (strncmp($url, '//', 2) == 0) {
+				return $parsedUrl['path'] . (isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '');
+			}
+
+			if (substr($url, 0, 1) == '?') {
+				return $parsedBaseUrl['path'] . $url;
+			}
+
+			if (substr($url, 0, 1) == '/') {
+				return $url;
+			}
+
+			$pathParts = explode('/', $parsedBaseUrl['path']);
+			array_pop($pathParts);
+
+			while (substr($url, 0, 3) == '../') {
+				array_pop($pathParts);
+				$url = substr($url, 3);
+			}
+
+			return implode('/', $pathParts) . '/' . $url;
+		}
+
 		return $url;
 	}
 
